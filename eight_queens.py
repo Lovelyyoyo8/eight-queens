@@ -1,3 +1,6 @@
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_pdf import PdfPages
+
 def solve_n_queens(n):
     solutions = []
     board = [['.' for _ in range(n)] for _ in range(n)]
@@ -40,9 +43,17 @@ def is_valid(board, row, col):
 
     return True
 
-# solve
 solutions = solve_n_queens(8)
-for solution in solutions:
-    for row in solution:
-        print(row)
-    print()
+
+# Save solutions to PDF
+pdf_filename = 'n_queens_solutions_matplotlib.pdf'
+with PdfPages(pdf_filename) as pdf:
+    for i, solution in enumerate(solutions):
+        plt.figure()
+        plt.imshow([[1 if cell == 'Q' else 0 for cell in row] for row in solution], cmap='Blues', vmin=0, vmax=1)
+        plt.title(f'Solution {i+1}')
+        plt.axis('off')
+        pdf.savefig()
+        plt.close()
+
+print(f"PDF file '{pdf_filename}' created successfully.")
