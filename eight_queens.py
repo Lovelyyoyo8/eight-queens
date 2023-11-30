@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
+import pandas as pd
 
 def solve_n_queens(n):
     solutions = []
@@ -45,8 +46,18 @@ def is_valid(board, row, col):
 
 solutions = solve_n_queens(8)
 
+# Save solutions to Excel
+excel_filename = 'n_queens_solutions_matplotlib_pandas.xlsx'
+excel_writer = pd.ExcelWriter(excel_filename, engine='xlsxwriter')
+
+for i, solution in enumerate(solutions):
+    df_solution = pd.DataFrame([list(row) for row in solution], columns=[f'Column_{j+1}' for j in range(len(solution[0]))])
+    df_solution.to_excel(excel_writer, sheet_name=f'Solution_{i+1}', index=False)
+
+excel_writer.save()
+
 # Save solutions to PDF
-pdf_filename = 'n_queens_solutions_matplotlib.pdf'
+pdf_filename = 'n_queens_solutions_matplotlib_pandas.pdf'
 with PdfPages(pdf_filename) as pdf:
     for i, solution in enumerate(solutions):
         plt.figure()
@@ -56,4 +67,4 @@ with PdfPages(pdf_filename) as pdf:
         pdf.savefig()
         plt.close()
 
-print(f"PDF file '{pdf_filename}' created successfully.")
+print(f"Excel file '{excel_filename}' and PDF file '{pdf_filename}' created successfully.")
